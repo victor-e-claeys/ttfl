@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText, Divider} from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import moment from 'moment';
 import jsonQuery from 'json-query';
@@ -41,9 +41,6 @@ class Post extends Component{
       numberCommentsDisplayed: 2
     };
   }
-  componentDidMount(){
-    console.log(this.props.comments);
-  }
   showMoreComments(){
     this.setState({
       numberCommentsDisplayed: this.state.numberCommentsDisplayed + numberCommentsToShow
@@ -53,9 +50,9 @@ class Post extends Component{
     const post = this.props.post;
     const moreCommentAmount = Math.max(Math.min(this.props.comments.value.length - this.state.numberCommentsDisplayed, numberCommentsToShow), 0);
     return(
-      <Card>
+      <Card className="post">
         <CardHeader
-          title={post.from_name}
+          title={<a className="author" target="_blank" href={'https://www.facebook.com/' + post.from_id}>{post.from_name}</a>}
           subtitle={moment(post.created_time).format('YYYY-MM-DD HH:mm')}
           avatar={"https://graph.facebook.com/v2.12/" + post.from_id + "/picture?access_token"}
         />
@@ -67,20 +64,33 @@ class Post extends Component{
             {this.props.comments.value.length} comments
           </div>
           {
-            this.props.comments.value.slice(0, this.state.numberCommentsDisplayed).map(comment => {
+            this.props.comments.value.sort((a,b) => {
+              return moment(a.created_time).valueOf() > moment(b.created_time).valueOf() ? -1 : 1;
+            }).slice(0, this.state.numberCommentsDisplayed).map(comment => {
               return(
-                <div class="comment-wrapper">
-                  <div className="comment">
-                    <div className="author">{comment.from_name}</div>
-                    <div className="message">{comment.message}</div>
-                  </div>
-                </div>
+                <Comment comment={comment} />
               );
             })
           }
+          
+          <Divider />
           <a className="showMoreComments" onClick={this.showMoreComments.bind(this)}>Show {moreCommentAmount} more comments</a>
         </CardActions>
       </Card>
+    );
+  }
+}
+
+class Comment extends Component{
+  render(){
+    const comment = this.props.comment;
+    return(
+      <div class="comment-wrapper">
+        <div className="comment">
+          <div className="author" title={moment(comment.created_time).format('YYYY-MM-DD HH:mm')}>{comment.from_name}</div>
+          <div className="message">{comment.message}</div>
+        </div>
+      </div>
     );
   }
 }

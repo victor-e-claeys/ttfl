@@ -12,6 +12,10 @@ a{
   cursor: pointer;
 }
 
+.post{
+  margin-top: 16px;
+}
+
 .post-footer{
   background-color: #f9f9f9;
 }
@@ -21,7 +25,7 @@ a{
 }
 
 .comment{
-  background-color: white;
+  background-color: #FFFFFF;
   border-radius: 8px;
   display: inline-block;
   font-size: 14px;
@@ -29,7 +33,9 @@ a{
 }
 
 .author{
+  color: #000000;
   font-weight: bold;
+  text-decoration: none;
 }
 
 .showMoreComments{
