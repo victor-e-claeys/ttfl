@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "json-query": "^2.2.2",
+    "moment": "^2.22.0",
+    "sqlite-json-export": "^0.0.1",
+    "sqlite3": "^4.0.0"
+  }
+}

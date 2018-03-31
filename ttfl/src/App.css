@@ -1,0 +1,42 @@
+
+.container{
+  max-width: 1024px;
+  margin: auto;
+}
+
+.message{
+  white-space: pre-wrap;
+}
+
+a{
+  cursor: pointer;
+}
+
+.post-footer{
+  background-color: #f9f9f9;
+}
+
+.comment-wrapper{
+  padding: 4px 16px;
+}
+
+.comment{
+  background-color: white;
+  border-radius: 8px;
+  display: inline-block;
+  font-size: 14px;
+  padding: 12px;
+}
+
+.author{
+  font-weight: bold;
+}
+
+.showMoreComments{
+  color: rgb(0, 188, 212);
+  text-decoration: underline;
+}
+
+.showMoreComments:hover{
+  text-decoration: none;
+}
