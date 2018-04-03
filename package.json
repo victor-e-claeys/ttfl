@@ -1,7 +1,9 @@
 {
   "dependencies": {
-    "json-query": "^2.2.2",
+    "full-text-search": "^0.0.16",
     "moment": "^2.22.0",
+    "react-on-screen": "^2.0.3",
+    "react-visibility-sensor": "^3.11.0",
     "sqlite-json-export": "^0.0.1",
     "sqlite3": "^4.0.0"
   }

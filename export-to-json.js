@@ -1,17 +1,33 @@
-const SqliteJsonExport = require('sqlite-json-export');
 const fs = require('fs');
-const loki = require('lokijs');
-const exporter = new SqliteJsonExport('ttfl.db');
+const moment = require('moment');
+const comments = require('./ttfl/src/data/comment.json');
+let posts = require('./ttfl/src/data/post.json');
+let postComments = {};
 
-var db = new loki('ttfl.json')
-
-var posts = db.addCollection('posts');
-exporter.json('select * FROM post', (err, data) => {
-    posts.insert(data);
+posts.forEach(function(post, index){
+    postComments[post.id] = [];
 });
 
-var comments = db.addCollection('comments');
-exporter.json('select * FROM comment', (err, data) => {
-    for(var i = 0; i < data.length; i++)
-        comments.insert(data[i]);
+console.log('postComments object created');
+
+comments.sort(function(a, b){
+    return moment(a.created_time).valueOf() > moment(b.created_time).valueOf() ? 1 : -1;
+}).forEach(function(comment, index){
+    postComments[comment.post_id].push(comment);
 });
+
+console.log('comments added to postComments');
+
+posts.forEach(function(post, index){
+    posts[index].comments = postComments[post.id];
+});
+
+console.log('comments added to posts');
+
+fs.writeFile("./ttfl/src/data/posts.json", JSON.stringify(posts), 'utf8', function (err) {
+    if (err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+}); 

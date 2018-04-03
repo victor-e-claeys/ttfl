@@ -20,6 +20,10 @@ a{
   background-color: #f9f9f9;
 }
 
+.post-footer:empty{
+  display:none;
+}
+
 .comment-wrapper{
   padding: 4px 16px;
 }
@@ -45,4 +49,18 @@ a{
 
 .showMoreComments:hover{
   text-decoration: none;
+}
+
+.loading{
+  font-size: 2rem;
+  text-align: center;
+}
+
+.load-more{
+  background-color: rgba(0, 188, 212, 0.1);
+  color: rgb(0, 188, 212);
+  display: block;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  text-align: center;
 }
