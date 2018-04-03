@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {IconButton, Paper, TextField} from 'material-ui';
+import {IconButton, Paper, RaisedButton, TextField} from 'material-ui';
 import {ActionSearch} from 'material-ui/svg-icons';
 import moment from 'moment';
 import Post from './Post';
@@ -21,6 +21,9 @@ export default class PostList extends Component {
             sortby: 'created_time',
             posts: []
         }
+        this.search = this.search.bind(this);
+        this.clearSearch = this.clearSearch.bind(this);
+        this.onSearchChange = this.onSearchChange.bind(this);
     }
     componentWillMount(){
         const {posts} = this.props;
@@ -45,6 +48,12 @@ export default class PostList extends Component {
         return posts.sort(function(a, b){
             return moment(a[sortby]).valueOf() < moment(b[sortby]).valueOf() ? 1 : -1;
         });
+    }
+    clearSearch(e){
+        this.setState({
+            search: ''
+        });
+        this.getPosts();
     }
     onSearchChange(e){
         this.setState({
@@ -71,11 +80,23 @@ export default class PostList extends Component {
         const {numberPosts, page, posts, search} = this.state;
       return (
         <div className="post-list-wrapper">
-            <Paper style={{padding:8}}>
-                <TextField hintText="Search" onChange={this.onSearchChange.bind(this)} />
-                <IconButton touch={true} onClick={this.search.bind(this)}>
-                    <ActionSearch />
-                </IconButton>
+            <Paper style={{padding:8,overflow:'hidden'}}>
+                <div style={{float:'right'}}>
+                    <TextField 
+                        hintText="Enter your query" 
+                        value={search} 
+                        onChange={this.onSearchChange} 
+                        onKeyDown={(e) => {
+                            console.log(e, e.key);
+                            if(e.key === 'Enter'){
+                                this.onSearchChange(e);
+                                this.search();
+                            }
+                        }} 
+                    />
+                    <RaisedButton style={{margin: '0 8px'}} label="Search" primary={true} onClick={this.search} />
+                    <RaisedButton label="Clear" onClick={this.clearSearch} />
+                </div>
             </Paper>
             <div className="post-list">
             {
@@ -86,7 +107,11 @@ export default class PostList extends Component {
             })
             }
             </div>
-            <a className='load-more' onClick={this.nextPage.bind(this)}>Load more</a>
+            {
+                search === '' && this.props.posts.length > posts.length ?
+                <a className='load-more' onClick={this.nextPage.bind(this)}>Load more</a> :
+                null
+            }
         </div>
       );
     }

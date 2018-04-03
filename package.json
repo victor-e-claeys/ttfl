@@ -2,6 +2,8 @@
   "dependencies": {
     "full-text-search": "^0.0.16",
     "moment": "^2.22.0",
+    "react-autolink-text2": "^3.2.0",
+    "react-facebook": "^5.0.3",
     "react-on-screen": "^2.0.3",
     "react-visibility-sensor": "^3.11.0",
     "sqlite-json-export": "^0.0.1",

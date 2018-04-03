@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import {Card, CardActions, CardHeader, CardTitle, CardText, Divider} from 'material-ui';
+import {Card, CardActions, CardHeader, CardText, Divider} from 'material-ui';
 import moment from 'moment';
+import Attachment from './Attachment';
 import Comment from './Comment';
 import Loading from './Loading';
 import TrackVisibility from 'react-on-screen';
+import AutoLinkText from 'react-autolink-text2';
 
 export default class Post extends Component{
     constructor(props){
@@ -27,11 +29,12 @@ export default class Post extends Component{
             <Card className="post">
                 <CardHeader
                     title={<a className="author" target="_blank" href={'https://www.facebook.com/' + post.from_id}>{post.from_name}</a>}
-                    subtitle={moment(post.created_time).format('YYYY-MM-DD HH:mm')}
+                    subtitle={<a className="permalink" target="_blank" href={'https://www.facebook.com/' + post.id}>{moment(post.created_time).format('YYYY-MM-DD HH:mm')}</a>}
                     avatar={"https://graph.facebook.com/v2.12/" + post.from_id + "/picture?access_token"}
                 />
                 <CardText className="message">
-                    {post.message}
+                    <AutoLinkText text={post.message} linkProps={{target:'_blank'}} />
+                    <Attachment post={post} />
                 </CardText>
                 <TrackVisibility once partialVisibility>
                     {({ isVisible }) => {
