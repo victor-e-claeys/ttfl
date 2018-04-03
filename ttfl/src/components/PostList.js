@@ -10,7 +10,7 @@ export default class PostList extends Component {
     constructor(props){
         super(props);
         this.searchEngine = new fullTextSearch({
-            ignore_case: false,
+            ignore_case: true,
             index_amount: 3,
             minimum_chars: 3
         });
@@ -37,16 +37,14 @@ export default class PostList extends Component {
         const {numberPosts, page} = this.state;
         const {posts} = this.props;
         this.setState({
-            posts: posts.slice(numberPosts * page, numberPosts)
+            posts: this.sortPosts(posts).slice(numberPosts * page, numberPosts)
         });
     }
-    sortPosts(){
-        const {sortby, posts} = this.state;
-        this.setState({
-            posts: posts.sort(function(a, b){
-                return moment(a[sortby]).valueOf() > moment(b[sortby]).valueOf() ? 1 : -1;
-            })
-        }) 
+    sortPosts(posts){
+        const {sortby} = this.state;
+        return posts.sort(function(a, b){
+            return moment(a[sortby]).valueOf() < moment(b[sortby]).valueOf() ? 1 : -1;
+        });
     }
     onSearchChange(e){
         this.setState({
