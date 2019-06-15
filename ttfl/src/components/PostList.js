@@ -5,6 +5,7 @@ import moment from 'moment';
 import Post from './Post';
 import fullTextSearch from 'full-text-search';
 import TrackVisibility from 'react-on-screen';
+import queryString from 'query-string';
 
 export default class PostList extends Component {
     constructor(props){
@@ -14,12 +15,15 @@ export default class PostList extends Component {
             index_amount: 3,
             minimum_chars: 3
         });
+        const query = queryString.parse(window.location.hash);
         this.state = {
             page: 0,
             numberPosts: props.postsPerPage,
-            search: '',
+            search: query.search ? query.search : null,
             sortby: 'created_time',
-            posts: []
+            posts: [],
+            post: query.post ? query.post : null,
+            comment: query.comment ? query.comment : null
         }
         this.search = this.search.bind(this);
         this.clearSearch = this.clearSearch.bind(this);
@@ -30,6 +34,11 @@ export default class PostList extends Component {
         for(var i = 0; i < posts.length; i++)
             this.searchEngine.add(posts[i], this.searchEngineFilter);
         this.getPosts();
+        if(this.state.search){
+            this.search();
+        }else if(this.state.post){
+            this.getPost();
+        }
     }
     componentDidUpdate(prevProps, prevState){
         if(prevState.numberPosts !== this.state.numberPosts){
@@ -37,10 +46,19 @@ export default class PostList extends Component {
         }
     }
     getPosts(){
-        const {numberPosts, page} = this.state;
-        const {posts} = this.props;
+        const {numberPosts, page, post, comment} = this.state;
+        let {posts} = this.props;
         this.setState({
             posts: this.sortPosts(posts).slice(numberPosts * page, numberPosts)
+        });
+    }
+    getPost(){
+        const {posts} = this.props;
+        const {post} = this.state;
+        this.setState({
+            posts: posts.filter(function(currentPost){
+                return currentPost.id === post;
+            })
         });
     }
     sortPosts(posts){

@@ -1,12 +1,20 @@
 {
   "dependencies": {
+    "fb": "^2.0.0",
+    "firebase-admin": "^5.11.0",
     "full-text-search": "^0.0.16",
+    "gun": "^0.9.991",
+    "lowdb": "^1.0.0",
     "moment": "^2.22.0",
+    "node-fetch": "^2.1.2",
+    "pouchdb": "^6.4.3",
+    "query-string": "^6.7.0",
     "react-autolink-text2": "^3.2.0",
     "react-facebook": "^5.0.3",
     "react-on-screen": "^2.0.3",
     "react-visibility-sensor": "^3.11.0",
     "sqlite-json-export": "^0.0.1",
-    "sqlite3": "^4.0.0"
+    "sqlite3": "^4.0.0",
+    "taffy": "^2.6.2"
   }
 }

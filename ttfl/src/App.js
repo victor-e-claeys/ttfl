@@ -5,7 +5,7 @@ import PostList from './components/PostList';
 import './App.css';
 import FacebookProvider from 'react-facebook';
 
-const posts = require('./data/posts.json');
+const posts = require('./data/posts-with-rel-full.json');
 
 export default class App extends Component {
   render() {
@@ -17,7 +17,7 @@ export default class App extends Component {
               title="The Tender For Law"
             />
             <div className="container">
-              <PostList posts={posts} postsPerPage={10} />
+              <PostList posts={Object.values(posts)} postsPerPage={10} />
             </div>
           </div>
         </FacebookProvider>

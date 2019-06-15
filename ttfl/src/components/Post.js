@@ -24,7 +24,7 @@ export default class Post extends Component{
     render(){
         const {numberCommentsDisplayed, numberCommentsToShow} = this.state;
         const {post} = this.props;
-        const moreCommentAmount = Math.max(Math.min(post.comments.length - numberCommentsDisplayed, numberCommentsToShow), 0);
+        const moreCommentAmount = post.comments ? Math.max(Math.min(post.comments.length - numberCommentsDisplayed, numberCommentsToShow), 0) : 0;
         return(
             <Card className="post">
                 <CardHeader
@@ -42,7 +42,7 @@ export default class Post extends Component{
                             ?
                             <CardActions className="post-footer">
                                 {
-                                    post.comments.length > 0 
+                                    post.comments && post.comments.length > 0 
                                     ?
                                     <div className="number-of-comments">
                                     {post.comments.length} comments
@@ -51,11 +51,13 @@ export default class Post extends Component{
                                     null
                                 }
                                 {
+                                post.comments ? 
                                 post.comments.slice(0, numberCommentsDisplayed).map(comment => {
                                     return(
                                     <Comment key={comment.id} comment={comment} />
                                     );
-                                })
+                                }) :
+                                null
                                 }
                                 {
                                     moreCommentAmount > 0 
