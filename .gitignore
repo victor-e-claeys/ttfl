@@ -1,5 +1,7 @@
 /node_modules
+/node_modules/**
 /ttfl/node_modules
+/ttfl/node_modules/**
 /db
 /config.json
 /key.json

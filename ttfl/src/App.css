@@ -19,6 +19,12 @@ a{
 
 .post-footer{
   background-color: #f9f9f9;
+  display: block !important;
+}
+
+.post-footer > *{
+  display: block !important;
+  margin: 0 !important;
 }
 
 .post-footer:empty{
@@ -26,7 +32,8 @@ a{
 }
 
 .comment-wrapper{
-  padding: 4px 16px;
+  padding: 4px 0px;
+  width: 100%;
 }
 
 .comment{

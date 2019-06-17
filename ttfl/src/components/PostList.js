@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import {IconButton, Paper, RaisedButton, TextField} from 'material-ui';
-import {ActionSearch} from 'material-ui/svg-icons';
+import {Paper, Button, TextField} from '@material-ui/core';
 import moment from 'moment';
 import Post from './Post';
 import fullTextSearch from 'full-text-search';
-import TrackVisibility from 'react-on-screen';
+import queryString from 'query-string';
+
 
 export default class PostList extends Component {
     constructor(props){
@@ -14,16 +14,16 @@ export default class PostList extends Component {
             index_amount: 3,
             minimum_chars: 3
         });
+        const query = queryString.parse(window.location.hash);
         this.state = {
             page: 0,
             numberPosts: props.postsPerPage,
-            search: '',
+            search: query.search ? query.search : null,
             sortby: 'created_time',
-            posts: []
+            posts: [],
+            post: query.post ? query.post : null,
+            comment: query.comment ? query.comment : null
         }
-        this.search = this.search.bind(this);
-        this.clearSearch = this.clearSearch.bind(this);
-        this.onSearchChange = this.onSearchChange.bind(this);
     }
     componentWillMount(){
         const {posts} = this.props;
@@ -36,7 +36,7 @@ export default class PostList extends Component {
             this.getPosts();
         }
     }
-    getPosts(){
+    getPosts = () =>{
         const {numberPosts, page} = this.state;
         const {posts} = this.props;
         this.setState({
@@ -44,18 +44,20 @@ export default class PostList extends Component {
         });
     }
     sortPosts(posts){
-        const {sortby} = this.state;
-        return posts.sort(function(a, b){
+        const {sortby, post} = this.state;
+        return posts.filter(function(currentPost){
+            return post ? currentPost.id === post : true;
+        }).sort(function(a, b){
             return moment(a[sortby]).valueOf() < moment(b[sortby]).valueOf() ? 1 : -1;
         });
     }
-    clearSearch(e){
+    clearSearch = (e) => {
         this.setState({
             search: ''
         });
         this.getPosts();
     }
-    onSearchChange(e){
+    onSearchChange = (e) => {
         this.setState({
             search: e.target.value
         });
@@ -63,13 +65,13 @@ export default class PostList extends Component {
     searchEngineFilter(key, value){
         return key === 'message';
     }
-    search(){
+    search = () =>{
         const {search} = this.state;
         this.setState({
             posts: this.searchEngine.search(search)
         });
     }
-    nextPage(){
+    nextPage = () => {
         const {postsPerPage} = this.props;
         const {numberPosts} = this.state;
         this.setState({
@@ -77,7 +79,7 @@ export default class PostList extends Component {
         });
     }
     render() {
-        const {numberPosts, page, posts, search} = this.state;
+        const {posts, search, comment} = this.state;
       return (
         <div className="post-list-wrapper">
             <Paper style={{padding:8,overflow:'hidden'}}>
@@ -94,15 +96,15 @@ export default class PostList extends Component {
                             }
                         }} 
                     />
-                    <RaisedButton style={{margin: '0 8px'}} label="Search" primary={true} onClick={this.search} />
-                    <RaisedButton label="Clear" onClick={this.clearSearch} />
+                    <Button variant="contained" style={{margin: '0 8px'}} color="primary" onClick={this.search}>Search</Button>
+                    <Button variant="contained" onClick={this.clearSearch}>Clear</Button>
                 </div>
             </Paper>
             <div className="post-list">
             {
             posts.map(post => {
                 return(
-                    <Post key={post.id} post={post} search={search} />
+                    <Post key={post.id} post={post} search={search} comment={comment} />
                 );
             })
             }
@@ -112,6 +114,9 @@ export default class PostList extends Component {
                 <a className='load-more' onClick={this.nextPage.bind(this)}>Load more</a> :
                 null
             }
+            <Button variant="contained" color="primary" onClick={this.nextPage}>
+                View more
+            </Button>
         </div>
       );
     }

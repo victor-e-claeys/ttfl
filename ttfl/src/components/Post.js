@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-import {Card, CardActions, CardHeader, CardText, Divider} from 'material-ui';
+import {Avatar, Card, CardActions, CardHeader, CardContent, Divider, IconButton, Icon} from '@material-ui/core';
 import moment from 'moment';
 import Attachment from './Attachment';
 import Comment from './Comment';
 import Loading from './Loading';
 import TrackVisibility from 'react-on-screen';
 import AutoLinkText from 'react-autolink-text2';
+import * as clipboard from "clipboard-polyfill/build/clipboard-polyfill.promise"
 
 export default class Post extends Component{
     constructor(props){
       super(props);
       this.state = {
-            numberCommentsToShow: 100,
-            numberCommentsDisplayed: 2
+        numberCommentsToShow: 100,
+        numberCommentsDisplayed: 2
       };
     }
     showMoreComments(){
@@ -23,19 +24,35 @@ export default class Post extends Component{
     }
     render(){
         const {numberCommentsDisplayed, numberCommentsToShow} = this.state;
-        const {post} = this.props;
+        const {post, search, comment} = this.props;
         const moreCommentAmount = Math.max(Math.min(post.comments.length - numberCommentsDisplayed, numberCommentsToShow), 0);
+        const message = 
+            search && search.length > 0 ? 
+            post.message.replace(search, function(result){
+                return '<span class="search-result">' + result + '</span>';
+            }) :
+            post.message;
         return(
             <Card className="post">
                 <CardHeader
                     title={<a className="author" target="_blank" href={'https://www.facebook.com/' + post.from_id}>{post.from_name}</a>}
-                    subtitle={<a className="permalink" target="_blank" href={'https://www.facebook.com/' + post.id}>{moment(post.created_time).format('YYYY-MM-DD HH:mm')}</a>}
-                    avatar={"https://graph.facebook.com/v2.12/" + post.from_id + "/picture?access_token"}
+                    subheader={<a className="permalink" target="_blank" href={'https://www.facebook.com/' + post.id}>{moment(post.created_time).format('YYYY-MM-DD HH:mm')}</a>}
+                    avatar={<Avatar alt={post.from_name} src={"https://graph.facebook.com/v2.12/" + post.from_id + "/picture?access_token"} />}
+                    action={
+                        <IconButton 
+                            aria-label="Copy link" 
+                            onClick={() => {
+                                clipboard.writeText(window.location.href + '#post=' + post.id );
+                            }}
+                        >
+                            <Icon>link</Icon>
+                        </IconButton>
+                    }
                 />
-                <CardText className="message">
-                    <AutoLinkText text={post.message} linkProps={{target:'_blank'}} />
+                <CardContent className="message">
+                    <AutoLinkText text={message} linkProps={{target:'_blank'}} />
                     <Attachment post={post} />
-                </CardText>
+                </CardContent>
                 <TrackVisibility once partialVisibility>
                     {({ isVisible }) => {
                         return isVisible 
@@ -51,9 +68,10 @@ export default class Post extends Component{
                                     null
                                 }
                                 {
-                                post.comments.slice(0, numberCommentsDisplayed).map(comment => {
+                                (comment ? post.comments.filter(currentComment => currentComment.id === comment ) : post.comments.slice(0, numberCommentsDisplayed))
+                                .map(comment => {
                                     return(
-                                    <Comment key={comment.id} comment={comment} />
+                                    <Comment key={comment.id} comment={comment} post={post} />
                                     );
                                 })
                                 }

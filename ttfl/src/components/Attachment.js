@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {CardMedia, Paper} from 'material-ui';
+import {CardMedia, Paper} from '@material-ui/core';
 import {EmbeddedPost} from 'react-facebook';
 import TrackVisibility from 'react-on-screen';
 
